@@ -20,15 +20,17 @@ public class TarjetaCreditoController {
 	@Autowired
 	private ITarjetaCreditoService iTarjetaCreditoServiceimpl;
 
-	@GetMapping(value="/checkrate",produces = MediaType.APPLICATION_JSON_VALUE) 
-	public ResponseEntity<?> getRate(@RequestParam String cardNumber) {
+	@GetMapping(value="/operation/fee",produces = MediaType.APPLICATION_JSON_VALUE) 
+	public ResponseEntity<?> getRate(@RequestParam String cardNumber,@RequestParam Integer amount) {
 		
 		Optional<TarjetaCreditoResponse> responseOptional = iTarjetaCreditoServiceimpl.getCreditCardNameAndRate(cardNumber);
 		
 		if(responseOptional.isEmpty()) 
 			return new ResponseEntity<>("El numero de tarjeta no existe",HttpStatus.NOT_FOUND);
 		
-		return new ResponseEntity<TarjetaCreditoResponse>(responseOptional.get(),HttpStatus.OK);
+		String messege = "El importe total de la operación de $" +amount.toString() 
+		+ " con la marca " + responseOptional.get().getMarca() + " es de: $ " + amount + responseOptional.get().getTasa();
+		return new ResponseEntity<String>(messege,HttpStatus.OK);
 		
 	}
 }
